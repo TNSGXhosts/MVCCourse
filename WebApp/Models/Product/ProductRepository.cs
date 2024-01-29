@@ -1,3 +1,5 @@
+using WebApp.ViewModel;
+
 namespace WebApp.Models;
 
 public static class ProductRepository
@@ -82,5 +84,15 @@ public static class ProductRepository
         {
             _products.Remove(product);
         }
+    }
+
+    public static List<Product> GetProductsByCategoryId(int categoryId)
+    {
+        var products = _products.Where(p => p.CategoryId == categoryId);
+
+        if (products != null)
+            return products.ToList();
+        else
+            return new List<Product>();
     }
 }

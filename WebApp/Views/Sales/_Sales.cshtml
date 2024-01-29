@@ -1,0 +1,12 @@
+@model SalesViewModel
+
+<select asp-for="SelectedCategoryId" class="form-control">
+    <option value="">-- Select Category --</option>
+    @if (Model.Categories != null && Model.Categories.Count() > 0)
+    {
+        @foreach(var category in Model.Categories)
+        {
+            <option value="@category.CategoryId">@category.Name</option>
+        }
+    }
+</select>

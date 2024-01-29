@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Supermarket Management</title>
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 </head>
 <body>
     <header>
@@ -21,10 +22,16 @@
                             <a class="nav-link text-dark" asp-controller="home" asp-action="index">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="sales" asp-action="index">Sell</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="categories" asp-action="index">Categories</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="product" asp-action="index">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="transactions" asp-action="index">Transactions</a>
                         </li>
                     </ul>
                 </div>
@@ -40,6 +47,7 @@
             @RenderBody()
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
