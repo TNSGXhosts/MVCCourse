@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.Transactions;
-using Transaction = WebApp.Models.Transaction;
+using CoreBusiness;
 
 namespace WebApp.ViewModel;
 

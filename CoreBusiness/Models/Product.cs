@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.Models;
+namespace CoreBusiness;
 
 public class Product
 {

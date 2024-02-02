@@ -1,14 +1,23 @@
+using CoreBusiness;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Models;
+using UseCases.CategoriesUseCases;
+using UseCases.ProductsUseCases;
 using WebApp.ViewModel;
 
 namespace WebApp.Controllers;
 
-public class ProductController : Controller
+public class ProductController(
+    IAddProductUseCase addProductUseCase,
+    IDeleteProductUseCase deleteProductUseCase,
+    IEditProductUseCase editProductUseCase,
+    IViewProductsUseCase viewProductsUseCase,
+    IViewProductsInCategoryUseCase viewProductsInCategoryUseCase,
+    IViewSelectedProductUseCase viewSelectedProductUseCase,
+    IViewCategoriesUseCase viewCategoriesUseCase) : Controller
 {
     public IActionResult Index()
     {
-        var products = ProductRepository.GetProducts(true);
+        var products = viewProductsUseCase.Execute(true);
         return View(products);
     }
 
@@ -17,8 +26,8 @@ public class ProductController : Controller
         ViewBag.Action = "edit";
 
         var productViewModel = new ProductViewModel(){
-            Categories = CategoriesRepository.GetCategories(),
-            Product = ProductRepository.GetProductById(productId.HasValue ? productId.Value : 0, true) ?? new Product()
+            Categories = viewCategoriesUseCase.Execute(),
+            Product = viewSelectedProductUseCase.Execute(productId.HasValue ? productId.Value : 0, true) ?? new Product()
         };
 
         return View(productViewModel);
@@ -29,12 +38,12 @@ public class ProductController : Controller
     {
         if (ModelState.IsValid)
         {
-            ProductRepository.UpdateProduct(productViewModel.Product.ProductId, productViewModel.Product);
+            editProductUseCase.Execute(productViewModel.Product.ProductId, productViewModel.Product);
             return RedirectToAction(nameof(Index));
         }
 
         ViewBag.Action = "edit";
-        productViewModel.Categories = CategoriesRepository.GetCategories();
+        productViewModel.Categories = viewCategoriesUseCase.Execute();
 
         return View(productViewModel);
     }
@@ -45,7 +54,7 @@ public class ProductController : Controller
 
         var productViewModel = new ProductViewModel()
         {
-            Categories = CategoriesRepository.GetCategories()
+            Categories = viewCategoriesUseCase.Execute()
         };
 
         return View(productViewModel);
@@ -56,26 +65,26 @@ public class ProductController : Controller
     {
         if (ModelState.IsValid)
         {
-            ProductRepository.AddProduct(productViewModel.Product);
+            addProductUseCase.Execute(productViewModel.Product);
             return RedirectToAction(nameof(Index));
         }
 
         ViewBag.Action = "add";
-        productViewModel.Categories = CategoriesRepository.GetCategories();
+        productViewModel.Categories = viewCategoriesUseCase.Execute();
 
         return View(productViewModel);
     }
 
     public IActionResult Delete(int productId)
     {
-        ProductRepository.DeleteProduct(productId);
+        deleteProductUseCase.Execute(productId);
         return RedirectToAction(nameof(Index));
     }
 
     public IActionResult ProductsByCategoryPartial(int categoryId)
     {
-        var products = ProductRepository.GetProductsByCategoryId(categoryId); 
+        var products = viewProductsInCategoryUseCase.Execute(categoryId); 
 
         return PartialView("_Products", products);
-    } 
+    }
 }

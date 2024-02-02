@@ -1,7 +1,6 @@
 using AutoMapper;
-using WebApp.ViewModel;
 
-namespace WebApp.Models;
+namespace CoreBusiness;
 
 public static class ProductMapperConfig
 {

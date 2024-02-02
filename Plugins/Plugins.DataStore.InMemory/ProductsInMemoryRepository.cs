@@ -1,8 +1,9 @@
-using WebApp.ViewModel;
+using CoreBusiness;
+using UseCases.DataStorePluginInterfaces;
 
-namespace WebApp.Models;
+namespace Plugins.DataStore.InMemory;
 
-public static class ProductRepository
+public class ProductsInMemoryRepository(ICategoryRepository categoriesRepository) : IProductRepository
 {
     private static List<Product> _products = new List<Product>() {
         new Product() { ProductId = 1, Name = "Product 1", CategoryId = 1, Quantity = 5, Price = 10.0 },
@@ -10,7 +11,7 @@ public static class ProductRepository
         new Product() { ProductId = 3, Name = "Product 3", CategoryId = 1, Quantity = 25, Price = 50.0 },
     };
 
-    public static void AddProduct(Product product)
+    public void AddProduct(Product product)
     {
         if (_products != null && _products.Count > 0)
         {
@@ -27,7 +28,7 @@ public static class ProductRepository
         _products.Add(product);
     }
 
-    public static List<Product> GetProducts(bool loadCategories = false)
+    public IEnumerable<Product> GetProducts(bool loadCategories = false)
     {
         if (!loadCategories)
         {
@@ -40,7 +41,7 @@ public static class ProductRepository
                 _products.ForEach(p => {
                     if (p.CategoryId.HasValue)
                     {
-                        p.Category = CategoriesRepository.GetCategoryById(p.CategoryId.Value);
+                        p.Category = categoriesRepository.GetCategoryById(p.CategoryId.Value);
                     }
                 });
             }
@@ -49,7 +50,7 @@ public static class ProductRepository
         }
     }
 
-    public static Product? GetProductById(int productId, bool loadCategory = false)
+    public Product? GetProductById(int productId, bool loadCategory = false)
     {
         var product = _products.FirstOrDefault(x => x.ProductId == productId);
         if (product != null) 
@@ -58,14 +59,14 @@ public static class ProductRepository
             var resultProduct = mapper.Map<Product>(product);
 
             if (loadCategory && resultProduct.CategoryId.HasValue)
-                resultProduct.Category = CategoriesRepository.GetCategoryById(resultProduct.CategoryId.Value);
+                resultProduct.Category = categoriesRepository.GetCategoryById(resultProduct.CategoryId.Value);
 
             return resultProduct; 
         }
         return null;
     }
 
-    public static void UpdateProduct(int productId, Product product)
+    public void UpdateProduct(int productId, Product product)
     {
         if (productId != product.ProductId) return;
 
@@ -77,7 +78,7 @@ public static class ProductRepository
         }
     }
 
-    public static void DeleteProduct(int productId)
+    public void DeleteProduct(int productId)
     {
         var product = _products.FirstOrDefault(x => x.ProductId == productId);
         if (product != null)
@@ -86,7 +87,7 @@ public static class ProductRepository
         }
     }
 
-    public static List<Product> GetProductsByCategoryId(int categoryId)
+    public IEnumerable<Product> GetProductsByCategoryId(int categoryId)
     {
         var products = _products.Where(p => p.CategoryId == categoryId);
 

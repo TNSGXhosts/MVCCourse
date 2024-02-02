@@ -1,12 +1,13 @@
-using System.Transactions;
+using CoreBusiness;
+using UseCases.DataStorePluginInterfaces;
 
-namespace WebApp.Models;
+namespace Plugins.DataStore.InMemory;
 
-public static class TransactionRepository
+public class TransactionsInMemoryRepository : ITransactionRepository
 {
     private static List<Transaction> _transactions = new List<Transaction>();
 
-    public static IEnumerable<Transaction> GetByDayAndCashier(DateTime date, string cashierName)
+    public IEnumerable<Transaction> GetByDayAndCashier(DateTime date, string cashierName)
     {
         if (string.IsNullOrWhiteSpace(cashierName))
         {
@@ -16,7 +17,7 @@ public static class TransactionRepository
         }
     }
 
-    public static IEnumerable<Transaction> Search(string cashierName, DateTime startDate, DateTime endDate)
+    public IEnumerable<Transaction> Search(string cashierName, DateTime startDate, DateTime endDate)
     {
         if (string.IsNullOrWhiteSpace(cashierName))
         {
@@ -26,7 +27,7 @@ public static class TransactionRepository
         }
     }
 
-    public static void Add(string cashierName, int productId, string productName, double price, int beforeQty, int soldQty)
+    public void Add(string cashierName, int productId, string productName, double price, int beforeQty, int soldQty)
     {
         var transaction = new Transaction {
             ProductId = productId,

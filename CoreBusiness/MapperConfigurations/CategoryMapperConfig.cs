@@ -1,6 +1,6 @@
 using AutoMapper;
 
-namespace WebApp.Models;
+namespace CoreBusiness;
 
 public static class CategoryMapperConfig
 {

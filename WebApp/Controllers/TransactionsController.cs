@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Models;
+using UseCases.TransactionsUseCases;
 using WebApp.ViewModel;
 
 namespace WebApp.Controllers;
 
-public class TransactionsController : Controller
+public class TransactionsController(
+    ISearchTransactionsUseCase searchTransactionsUseCase
+    ) : Controller
 {
     public IActionResult Index()
     {
@@ -19,7 +21,7 @@ public class TransactionsController : Controller
         if (searchEntity == null)
             throw new ValidationException("Please provide search criteria");
 
-        var transactions = TransactionRepository.Search(searchEntity.CashierName ?? string.Empty, searchEntity.StartDate, searchEntity.EndDate);
+        var transactions = searchTransactionsUseCase.Execute(searchEntity.CashierName ?? string.Empty, searchEntity.StartDate, searchEntity.EndDate);
         searchEntity.Transactions = transactions;
         return View(nameof(Index), searchEntity);
     }

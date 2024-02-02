@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using WebApp.Models;
+using UseCases.ProductsUseCases;
 
 namespace WebApp.ViewModel;
 
@@ -7,6 +7,8 @@ public class SalesViewModel_EnsureProperQuantity : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object value, ValidationContext validationContext)
     {
+        var viewSelectedProductUseCase = validationContext.GetService<IViewSelectedProductUseCase>();
+
         var salesViewModel = validationContext.ObjectInstance as SalesViewModel;
         if (salesViewModel != null)
         {
@@ -14,7 +16,7 @@ public class SalesViewModel_EnsureProperQuantity : ValidationAttribute
             {
                 return new ValidationResult("The quantity to sell has to be greater than zero.");
             } else {
-                var product = ProductRepository.GetProductById(salesViewModel.SelectedProductId);
+                var product = viewSelectedProductUseCase?.Execute(salesViewModel.SelectedProductId);
                 
                 if (product != null)
                 {

@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Models;
+using UseCases.TransactionsUseCases;
 
 namespace WebApp.ViewComponents;
 
 [ViewComponent]
-public class TransactionsViewComponent : ViewComponent
+public class TransactionsViewComponent(IGetTransactionsByDayAndCashierUseCase getTransactionsByDayAndCashierUseCase) : ViewComponent
 {
     public IViewComponentResult Invoke(string username)
     {
-        var transactions = TransactionRepository.GetByDayAndCashier(DateTime.UtcNow , username);
-        
+        var transactions = getTransactionsByDayAndCashierUseCase.Execute(DateTime.UtcNow , username);
+
         return View(transactions);
-    } 
-} 
+    }
+}

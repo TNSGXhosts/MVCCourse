@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebApp.Models;
+using CoreBusiness;
+using UseCases.CategoriesUseCases;
 
 namespace WebApp.Controllers
 {
-    public class CategoriesController : Controller
+    public class CategoriesController(IViewCategoriesUseCase viewCategoriesUseCase, IViewSelectedCategoryUseCase viewSelectedCategoryUseCase, IAddCategoryUseCase addCategoryUseCase, IEditCategoryUseCase editCategoryUseCase, IDeleteCategoryUseCase deleteCategoryUseCase) : Controller
     {
         public IActionResult Index()
         {
-            var categories = CategoriesRepository.GetCategories();
+            var categories = viewCategoriesUseCase.Execute();
             return View(categories);
         }
 
@@ -15,7 +16,7 @@ namespace WebApp.Controllers
         {
             ViewBag.Action = "edit";
 
-            var category = CategoriesRepository.GetCategoryById(id.HasValue?id.Value:0);
+            var category = viewSelectedCategoryUseCase.Execute(id.HasValue?id.Value:0);
 
             return View(category);
         }
@@ -25,7 +26,7 @@ namespace WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                CategoriesRepository.UpdateCategory(category.CategoryId, category);
+                editCategoryUseCase.Execute(category.CategoryId, category);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -46,7 +47,7 @@ namespace WebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                CategoriesRepository.AddCategory(category);
+                addCategoryUseCase.Execute(category);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -57,7 +58,7 @@ namespace WebApp.Controllers
 
         public IActionResult Delete(int categoryId)
         {
-            CategoriesRepository.DeleteCategory(categoryId);
+            deleteCategoryUseCase.Execute(categoryId);
             return RedirectToAction(nameof(Index));
         }
 

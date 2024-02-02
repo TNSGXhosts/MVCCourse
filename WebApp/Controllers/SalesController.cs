@@ -1,23 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
-using WebApp.Models;
+using UseCases.CategoriesUseCases;
+using UseCases.ProductsUseCases;
+using UseCases.TransactionsUseCases;
 using WebApp.ViewModel;
 
 namespace WebApp.Controllers;
 
-public class SalesController : Controller
+public class SalesController(
+    IViewCategoriesUseCase viewCategoriesUseCase,
+    IViewSelectedProductUseCase viewSelectedProductUseCase,
+    ISellUseCase sellUseCase
+    ) : Controller
 {
     public IActionResult Index()
     {
         var salesViewModel = new SalesViewModel()
         {
-            Categories = CategoriesRepository.GetCategories()
+            Categories = viewCategoriesUseCase.Execute()
         };
         return View(salesViewModel);
     }
 
     public IActionResult GetSalesProductPartial(int productId)
     {
-        var product = ProductRepository.GetProductById(productId);
+        var product = viewSelectedProductUseCase.Execute(productId);
         return PartialView("_SellProduct", product);
     }
 
@@ -25,26 +31,12 @@ public class SalesController : Controller
     {
         if (ModelState.IsValid)
         {
-            var prod = ProductRepository.GetProductById(salesViewModel.SelectedProductId);
-            if (prod != null)
-            {
-                TransactionRepository.Add(
-                    "Cashier 1",
-                    prod.ProductId,
-                    prod.Name,
-                    prod.Price.HasValue ? prod.Price.Value : 0,
-                    prod.Quantity.HasValue ? prod.Quantity.Value : 0,
-                    salesViewModel.QuantityToSell
-                );
-                 
-                prod.Quantity -= salesViewModel.QuantityToSell;
-                ProductRepository.UpdateProduct(salesViewModel.SelectedProductId, prod);
-            } 
+            sellUseCase.Execute(salesViewModel.SelectedProductId, salesViewModel.QuantityToSell);
         }
 
-        var product = ProductRepository.GetProductById(salesViewModel.SelectedProductId);
+        var product = viewSelectedProductUseCase.Execute(salesViewModel.SelectedProductId);
         salesViewModel.SelectedCategoryId = product?.CategoryId ?? 0;
-        salesViewModel.Categories = CategoriesRepository.GetCategories();
+        salesViewModel.Categories = viewCategoriesUseCase.Execute();
 
         return View("Index", salesViewModel);
     }
