@@ -1,0 +1,8 @@
+{
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    },
+    "editor.codeActionsOnSaveTimeout": 15000,
+    "editor.formatOnSave": true
+  }
+  

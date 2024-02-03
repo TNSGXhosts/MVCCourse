@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+
 using UseCases.TransactionsUseCases;
 
 namespace WebApp.ViewComponents;
@@ -8,7 +9,7 @@ public class TransactionsViewComponent(IGetTransactionsByDayAndCashierUseCase ge
 {
     public IViewComponentResult Invoke(string username)
     {
-        var transactions = getTransactionsByDayAndCashierUseCase.Execute(DateTime.UtcNow , username);
+        var transactions = getTransactionsByDayAndCashierUseCase.Execute(DateTime.UtcNow, username);
 
         return View(transactions);
     }

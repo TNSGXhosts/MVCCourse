@@ -5,7 +5,7 @@ namespace Plugins.DataStore.InMemory;
 
 public class CategoriesInMemoryRepository : ICategoryRepository
 {
-    private static List<Category> _categories = new List<Category>()
+    private static ICollection<Category> s_categories = new List<Category>()
     {
         new Category { CategoryId = 1, Name = "Beverage", Description = "Beverage" },
         new Category { CategoryId = 2, Name = "Bakery", Description = "Bakery" },
@@ -14,9 +14,9 @@ public class CategoriesInMemoryRepository : ICategoryRepository
 
     public void AddCategory(Category category)
     {
-        if (_categories != null && _categories.Count > 0)
+        if (s_categories != null && s_categories.Count > 0)
         {
-            var maxId = _categories.Max(x => x.CategoryId);
+            var maxId = s_categories.Max(x => x.CategoryId);
             category.CategoryId = maxId + 1;
         }
         else
@@ -24,18 +24,18 @@ public class CategoriesInMemoryRepository : ICategoryRepository
             category.CategoryId = 1;
         }
 
-        if (_categories == null) _categories = new List<Category>();
-        
-        _categories.Add(category);
+        if (s_categories == null) s_categories = new List<Category>();
+
+        s_categories.Add(category);
     }
 
-    public IEnumerable<Category> GetCategories() => _categories;
+    public IEnumerable<Category> GetCategories() => s_categories;
 
     public Category? GetCategoryById(int categoryId)
     {
-        var category = _categories.FirstOrDefault(x => x.CategoryId == categoryId);
-        if (category != null) 
-        { 
+        var category = s_categories.FirstOrDefault(x => x.CategoryId == categoryId);
+        if (category != null)
+        {
             var mapper = CategoryMapperConfig.Configure();
             return mapper.Map<Category>(category);
         }
@@ -47,7 +47,7 @@ public class CategoriesInMemoryRepository : ICategoryRepository
     {
         if (categoryId != category.CategoryId) return;
 
-        var categoryToUpdate = _categories.FirstOrDefault(x => x.CategoryId == categoryId);
+        var categoryToUpdate = s_categories.FirstOrDefault(x => x.CategoryId == categoryId);
         if (categoryToUpdate != null)
         {
             var mapper = CategoryMapperConfig.Configure();
@@ -57,10 +57,10 @@ public class CategoriesInMemoryRepository : ICategoryRepository
 
     public void DeleteCategory(int categoryId)
     {
-        var category = _categories.FirstOrDefault(x => x.CategoryId == categoryId);
+        var category = s_categories.FirstOrDefault(x => x.CategoryId == categoryId);
         if (category != null)
         {
-            _categories.Remove(category);
+            s_categories.Remove(category);
         }
     }
 }

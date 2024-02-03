@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+
 using UseCases.CategoriesUseCases;
 using UseCases.ProductsUseCases;
 using UseCases.TransactionsUseCases;
+
 using WebApp.ViewModel;
 
 namespace WebApp.Controllers;

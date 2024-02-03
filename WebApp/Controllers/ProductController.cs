@@ -1,7 +1,10 @@
 using CoreBusiness;
+
 using Microsoft.AspNetCore.Mvc;
+
 using UseCases.CategoriesUseCases;
 using UseCases.ProductsUseCases;
+
 using WebApp.ViewModel;
 
 namespace WebApp.Controllers;
@@ -25,9 +28,10 @@ public class ProductController(
     {
         ViewBag.Action = "edit";
 
-        var productViewModel = new ProductViewModel(){
+        var productViewModel = new ProductViewModel()
+        {
             Categories = viewCategoriesUseCase.Execute(),
-            Product = viewSelectedProductUseCase.Execute(productId.HasValue ? productId.Value : 0, true) ?? new Product()
+            Product = viewSelectedProductUseCase.Execute(productId ?? 0, true) ?? new Product()
         };
 
         return View(productViewModel);
@@ -83,7 +87,7 @@ public class ProductController(
 
     public IActionResult ProductsByCategoryPartial(int categoryId)
     {
-        var products = viewProductsInCategoryUseCase.Execute(categoryId); 
+        var products = viewProductsInCategoryUseCase.Execute(categoryId);
 
         return PartialView("_Products", products);
     }

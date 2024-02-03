@@ -1,4 +1,5 @@
 using CoreBusiness;
+
 using UseCases.DataStorePluginInterfaces;
 
 namespace UseCases.CategoriesUseCases;
@@ -9,4 +10,4 @@ public class ViewSelectedCategoryUseCase(ICategoryRepository categoryRepository)
     {
         return categoryRepository.GetCategoryById(categoryId);
     }
-}       
+}

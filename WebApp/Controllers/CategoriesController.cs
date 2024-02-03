@@ -1,10 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using CoreBusiness;
+
 using UseCases.CategoriesUseCases;
 
 namespace WebApp.Controllers
 {
-    public class CategoriesController(IViewCategoriesUseCase viewCategoriesUseCase, IViewSelectedCategoryUseCase viewSelectedCategoryUseCase, IAddCategoryUseCase addCategoryUseCase, IEditCategoryUseCase editCategoryUseCase, IDeleteCategoryUseCase deleteCategoryUseCase) : Controller
+    public class CategoriesController(
+        IViewCategoriesUseCase viewCategoriesUseCase,
+        IViewSelectedCategoryUseCase viewSelectedCategoryUseCase,
+        IAddCategoryUseCase addCategoryUseCase,
+        IEditCategoryUseCase editCategoryUseCase,
+        IDeleteCategoryUseCase deleteCategoryUseCase) : Controller
     {
         public IActionResult Index()
         {
@@ -12,11 +19,11 @@ namespace WebApp.Controllers
             return View(categories);
         }
 
-        public IActionResult Edit(int? id) 
+        public IActionResult Edit(int? id)
         {
             ViewBag.Action = "edit";
 
-            var category = viewSelectedCategoryUseCase.Execute(id.HasValue?id.Value:0);
+            var category = viewSelectedCategoryUseCase.Execute(id ?? 0);
 
             return View(category);
         }
@@ -31,7 +38,7 @@ namespace WebApp.Controllers
             }
 
             ViewBag.Action = "edit";
-            
+
             return View(category);
         }
 
@@ -61,6 +68,5 @@ namespace WebApp.Controllers
             deleteCategoryUseCase.Execute(categoryId);
             return RedirectToAction(nameof(Index));
         }
-
     }
 }
