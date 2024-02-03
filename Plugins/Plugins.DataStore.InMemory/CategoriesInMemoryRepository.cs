@@ -3,7 +3,7 @@ using UseCases.DataStorePluginInterfaces;
 
 namespace Plugins.DataStore.InMemory;
 
-public class CategoriesInMemoryRepository : ICategoryRepository
+public class CategoriesInMemoryRepository(ICategoryMapperConfig categoryMapperConfig) : ICategoryRepository
 {
     private static ICollection<Category> s_categories = new List<Category>()
     {
@@ -36,7 +36,7 @@ public class CategoriesInMemoryRepository : ICategoryRepository
         var category = s_categories.FirstOrDefault(x => x.CategoryId == categoryId);
         if (category != null)
         {
-            var mapper = CategoryMapperConfig.Configure();
+            var mapper = categoryMapperConfig.Configure();
             return mapper.Map<Category>(category);
         }
 
@@ -50,7 +50,7 @@ public class CategoriesInMemoryRepository : ICategoryRepository
         var categoryToUpdate = s_categories.FirstOrDefault(x => x.CategoryId == categoryId);
         if (categoryToUpdate != null)
         {
-            var mapper = CategoryMapperConfig.Configure();
+            var mapper = categoryMapperConfig.Configure();
             mapper.Map(category, categoryToUpdate);
         }
     }

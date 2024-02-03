@@ -3,7 +3,7 @@ using UseCases.DataStorePluginInterfaces;
 
 namespace Plugins.DataStore.InMemory;
 
-public class ProductsInMemoryRepository(ICategoryRepository categoriesRepository) : IProductRepository
+public class ProductsInMemoryRepository(ICategoryRepository categoriesRepository, IProductMapperConfig productMapperConfig) : IProductRepository
 {
     private static List<Product> s_products = new List<Product>() {
         new Product() { ProductId = 1, Name = "Product 1", CategoryId = 1, Quantity = 5, Price = 10.0 },
@@ -56,7 +56,7 @@ public class ProductsInMemoryRepository(ICategoryRepository categoriesRepository
         var product = s_products.FirstOrDefault(x => x.ProductId == productId);
         if (product != null)
         {
-            var mapper = ProductMapperConfig.Configure();
+            var mapper = productMapperConfig.Configure();
             var resultProduct = mapper.Map<Product>(product);
 
             if (loadCategory && resultProduct.CategoryId.HasValue)
@@ -74,7 +74,7 @@ public class ProductsInMemoryRepository(ICategoryRepository categoriesRepository
         var productToUpdate = s_products.FirstOrDefault(x => x.ProductId == productId);
         if (productToUpdate != null)
         {
-            var mapper = ProductMapperConfig.Configure();
+            var mapper = productMapperConfig.Configure();
             mapper.Map(product, productToUpdate);
         }
     }

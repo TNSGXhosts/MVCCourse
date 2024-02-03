@@ -2,9 +2,9 @@ using AutoMapper;
 
 namespace CoreBusiness;
 
-public static class ProductMapperConfig
+public class ProductMapperConfig : IProductMapperConfig
 {
-    public static Mapper Configure()
+    public Mapper Configure()
     {
         var config = new MapperConfiguration(cfg => cfg.CreateMap<Product, Product>()
         );
