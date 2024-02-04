@@ -7,13 +7,13 @@ public class SellUseCase(
     ITransactionRepository transactionRepository
 ) : ISellUseCase
 {
-    public void Execute(int productId, int quantity)
+    public void Execute(string cashierName, int productId, int quantity)
     {
         var prod = productRepository.GetProductById(productId);
         if (prod != null)
         {
             transactionRepository.Add(
-                "Cashier 1",
+                cashierName,
                 prod.ProductId,
                 prod.Name,
                 prod.Price ?? 0,

@@ -1,5 +1,7 @@
 using CoreBusiness;
 
+using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
 
 using UseCases.CategoriesUseCases;
@@ -9,12 +11,12 @@ using WebApp.ViewModel;
 
 namespace WebApp.Controllers;
 
+[Authorize(Policy = "Inventory")]
 public class ProductController(
     IAddProductUseCase addProductUseCase,
     IDeleteProductUseCase deleteProductUseCase,
     IEditProductUseCase editProductUseCase,
     IViewProductsUseCase viewProductsUseCase,
-    IViewProductsInCategoryUseCase viewProductsInCategoryUseCase,
     IViewSelectedProductUseCase viewSelectedProductUseCase,
     IViewCategoriesUseCase viewCategoriesUseCase) : Controller
 {
@@ -83,12 +85,5 @@ public class ProductController(
     {
         deleteProductUseCase.Execute(productId);
         return RedirectToAction(nameof(Index));
-    }
-
-    public IActionResult ProductsByCategoryPartial(int categoryId)
-    {
-        var products = viewProductsInCategoryUseCase.Execute(categoryId);
-
-        return PartialView("_Products", products);
     }
 }

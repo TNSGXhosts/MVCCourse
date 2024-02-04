@@ -2,5 +2,5 @@ namespace UseCases.TransactionsUseCases;
 
 public interface ISellUseCase
 {
-    void Execute(int productId, int quantity);
+    void Execute(string cashierName, int productId, int quantity);
 }

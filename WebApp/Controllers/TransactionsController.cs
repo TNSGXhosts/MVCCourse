@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
 
 using UseCases.TransactionsUseCases;
@@ -8,6 +10,7 @@ using WebApp.ViewModel;
 
 namespace WebApp.Controllers;
 
+[Authorize]
 public class TransactionsController(
     ISearchTransactionsUseCase searchTransactionsUseCase
     ) : Controller

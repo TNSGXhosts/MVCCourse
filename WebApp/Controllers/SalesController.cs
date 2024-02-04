@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using UseCases.CategoriesUseCases;
@@ -8,10 +9,12 @@ using WebApp.ViewModel;
 
 namespace WebApp.Controllers;
 
+[Authorize(Policy = "Cashiers")]
 public class SalesController(
     IViewCategoriesUseCase viewCategoriesUseCase,
     IViewSelectedProductUseCase viewSelectedProductUseCase,
-    ISellUseCase sellUseCase
+    ISellUseCase sellUseCase,
+    IViewProductsInCategoryUseCase viewProductsInCategoryUseCase
     ) : Controller
 {
     public IActionResult Index()
@@ -31,9 +34,10 @@ public class SalesController(
 
     public IActionResult Sell(SalesViewModel salesViewModel)
     {
-        if (ModelState.IsValid)
+        var userName = User?.Identity?.Name;
+        if (ModelState.IsValid && userName != null)
         {
-            sellUseCase.Execute(salesViewModel.SelectedProductId, salesViewModel.QuantityToSell);
+            sellUseCase.Execute(userName, salesViewModel.SelectedProductId, salesViewModel.QuantityToSell);
         }
 
         var product = viewSelectedProductUseCase.Execute(salesViewModel.SelectedProductId);
@@ -41,5 +45,12 @@ public class SalesController(
         salesViewModel.Categories = viewCategoriesUseCase.Execute();
 
         return View("Index", salesViewModel);
+    }
+
+    public IActionResult ProductsByCategoryPartial(int categoryId)
+    {
+        var products = viewProductsInCategoryUseCase.Execute(categoryId);
+
+        return PartialView("_Products", products);
     }
 }

@@ -2,9 +2,13 @@
 
 @section title {
     <div class="row">
-        <div class="col-7"><h3>Cashier's Console</h3></div>
+        <div class="col-7">
+            <h3>Cashier's Console</h3>
+        </div>
         <div class="col-2"><label for="cashier">Cashier Name:</label></div>
-        <div class="col-3"></div>
+        <div class="col-3">
+            @User?.Identity?.Name
+        </div>
     </div>
 }
 
@@ -30,45 +34,44 @@
         </form>
     </div>
     <div class="col">
-        @await Component.InvokeAsync("Transactions", "Cashier 1")
+        @await Component.InvokeAsync("Transactions", User?.Identity?.Name)
     </div>
 </div>
 
 @section Scripts {
     <script>
-        $(function() {
+        $(function () {
             $("#formSale").hide();
             $("#SelectedProductId").val("");
 
             var categoryId = $("#SelectedCategoryId").val();
-            if (categoryId > 0)
-            {
+            if (categoryId > 0) {
                 loadProducts(categoryId);
             }
 
-            $("#SelectedCategoryId").on("change", function() {
+            $("#SelectedCategoryId").on("change", function () {
                 loadProducts($(this).val());
             })
 
-            $("#productsPartial").on("click", ".product-row", function() {
-                 $(".product-row").removeClass("highlight");
-                 $(this).addClass("highlight");
+            $("#productsPartial").on("click", ".product-row", function () {
+                $(".product-row").removeClass("highlight");
+                $(this).addClass("highlight");
 
-                 var productId = $(this).attr("product-id");
-                 $("#sellProductPartial ").load("/sales/GetSalesProductPartial", { productId: productId });
-                 console.log($("#formSale").length);
-                 if (productId > 0) {
+                var productId = $(this).attr("product-id");
+                $("#sellProductPartial ").load("/sales/GetSalesProductPartial", { productId: productId });
+                console.log($("#formSale").length);
+                if (productId > 0) {
                     $("#SelectedProductId").val(productId);
                     $("#formSale").show();
-                 } else {
+                } else {
                     $("#SelectedProductId").val("");
                     $("#formSale").hide();
-                 }
+                }
             })
         });
 
         function loadProducts(categoryId) {
-            $("#productsPartial").load("/product/ProductsByCategoryPartial", { categoryId: categoryId });
+            $("#productsPartial").load("/sales/ProductsByCategoryPartial", { categoryId: categoryId });
             $("#sellProductPartial").html("");
             $("#formSale").hide();
         }
