@@ -110,6 +110,10 @@ ipch/
 *.vspx
 *.sap
 
+#appsettings
+appsettings.json
+appsettings.Development.json
+
 # TFS 2012 Local Workspace
 $tf/
 
